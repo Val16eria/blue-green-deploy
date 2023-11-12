@@ -6,16 +6,24 @@
 	background: var(--gradient);
 }
 
-.header__links {
+.header__list {
 	display: flex;
 	flex-direction: row;
 	gap: 30px;
 	align-items: center;
-	color: var(--black);
 }
 
-.header__links_link {
+.header__list_item {
 	list-style-type: none;
+}
+
+.header__item_link {
+	text-decoration: none;
+	color: var(--black);
+	font-size: 16px;
+	font-style: normal;
+	font-weight: 400;
+	line-height: normal;
 }
 
 .header__btn {

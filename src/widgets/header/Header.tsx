@@ -8,15 +8,15 @@ const Header: FC = () => {
 		<header className='header__container global-indent'>
 			<img src={Logo} alt='logo' />
 			<nav>
-				<ul className='header__links'>
-					<li className='header__links_link'>
-						<a>Главная</a>
+				<ul className='header__list'>
+					<li className='header__list_item'>
+						<a className='header__item_link' href='/'>Главная</a>
 					</li>
-					<li className='header__links_link'>
-						<a>Каталог</a>
+					<li className='header__list_item'>
+						<a className='header__item_link' href='/' >Каталог</a>
 					</li>
-					<li className='header__links_link'>
-						<a>О нас</a>
+					<li className='header__list_item'>
+						<a className='header__item_link' href='/'>О нас</a>
 					</li>
 				</ul>
 			</nav>
