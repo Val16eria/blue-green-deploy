@@ -1,3 +1,9 @@
 .global-indent {
 	padding: 20px 80px;
 }
+
+.gradient-text {
+	background-clip: text;
+	color: transparent;
+	background-image: var(--gradient);
+}

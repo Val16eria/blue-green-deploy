@@ -21,7 +21,7 @@ const Header: FC = () => {
 				</ul>
 			</nav>
 			<button className='header__btn'>
-				<p className='header__btn_text'>Click</p>
+				<p className='header__btn_text gradient-text'>Click</p>
 			</button>
 		</header>
 	);
