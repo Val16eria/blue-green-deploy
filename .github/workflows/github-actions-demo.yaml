@@ -1,6 +1,10 @@
 name: GitHub Actions Demo
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 jobs:
   init:
     runs-on: ubuntu-latest
@@ -8,9 +12,10 @@ jobs:
       matrix:
         node-version: [ 18.x ]
     env:
-      SSH_KEY: $
+      SSH_KEY: ${{ secrets.SSH_KEY }}
     steps:
       - uses: actions/checkout@v4
+      # CREATE NODE SERVER
       - name: Starting Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
@@ -22,7 +27,7 @@ jobs:
       - name: build project
         run: yarn build
       # SSH
-      - run: mkdir ~/.ssh
-      - run: 'echo "$SSH_KEY" >> ~/.ssh/github-action'
+      - run: mkdir -p ~/.ssh
+      - run: echo "$SSH_KEY" >> ~/.ssh/github-action
       - run: chmod 400 ~/.ssh/github-action
       - run: echo -e "Host static\n\tUser github-actions-tutorial\n\tHostname 5.189.239.236.\n\tIdentityFile ~/.ssh/github-action\n\tStrictHostKeyChecking No" >> ~/.ssh/config
