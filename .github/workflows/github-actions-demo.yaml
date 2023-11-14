@@ -32,3 +32,4 @@ jobs:
       - run: chmod 700 ~/.ssh/github-action
       - run: echo -e "Host static\n\tUser github-actions-tutorial\n\tHostname 5.189.239.236\n\tIdentityFile ~/.ssh/github-action\n\tStrictHostKeyChecking No" >> ~/.ssh/config
       - run: scp -r -P 32522 build/* root@wis-software.ru:/var/www/test
+      - run: echo "finish"
