@@ -27,16 +27,17 @@ jobs:
       - name: build project
         run: yarn build
       # SSH
-      - name: install ssh key
-        uses: shimataro/ssh-key-action@v2
-        with:
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          name: is_rsa
-          known_hosts: ${{ secrets.KNOWN_HOSTS }}
-      - name: adding Known Hosts
-        run: ssh-keyscan -p ${{ secrets.SSH_PORT_PROD }} -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-      - name: deploy with rsync
-        run: rsync -avz -e "ssh -p ${{ secrets.SSH_PORT_PROD }}" build/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/test
+      - run: scp -r -P 32522 build/* root@wis-software.ru:/var/www/test
+#      - name: install ssh key
+#        uses: shimataro/ssh-key-action@v2
+#        with:
+#          key: ${{ secrets.SSH_PRIVATE_KEY }}
+#          name: is_rsa
+#          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+#      - name: adding Known Hosts
+#        run: ssh-keyscan -p ${{ secrets.SSH_PORT_PROD }} -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+#      - name: deploy with rsync
+#        run: rsync -avz -e "ssh -p ${{ secrets.SSH_PORT_PROD }}" build/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/test
 
 #      - run: mkdir -p ~/.ssh
 #      - run: echo "$SSH_KEY" >> ~/.ssh/github-action
