@@ -27,17 +27,26 @@ jobs:
       - name: build project
         run: yarn build
       # SSH
-      - name: install ssh key
-        uses: shimataro/ssh-key-action@v2
-        with:
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          name: is_rsa
-          # todo: вот это под вопросом
-          known_hosts: 'just-a-placeholder-so-we-dont-get-errors'
-      - name: adding Known Hosts
-        run: ssh-keyscan -p ${{ secrets.SSH_PORT_PROD }} -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-      - name: deploy with rsync
-        run: rsync -avz -e "ssh -p ${{ secrets.SSH_PORT_PROD }}" build/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/test
+      - run: mkdir -p ~/.ssh
+      - run: echo "${{ SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
+      - run: chmod 700 ~/.ssh/id_rsa
+      - run: eval "$(ssh-agent -s)"
+      - run: ssh-add ~/.ssh/id_rsa
+      - run: ssh-keyscan -p ${{ secrets.SSH_PORT_PROD }} -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+      - run: echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+      - run: chmod 644 ~/.ssh/known_hosts
+
+#      - name: install ssh key
+#        uses: shimataro/ssh-key-action@v2
+#        with:
+#          key: ${{ secrets.SSH_PRIVATE_KEY }}
+#          name: is_rsa
+#          # todo: вот это под вопросом
+#          known_hosts: 'just-a-placeholder-so-we-dont-get-errors'
+#      - name: adding Known Hosts
+#        run: ssh-keyscan -p ${{ secrets.SSH_PORT_PROD }} -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+#      - name: deploy with rsync
+#        run: rsync -avz -e "ssh -p ${{ secrets.SSH_PORT_PROD }}" build/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/test
 
 #      - run: mkdir -p ~/.ssh
 #      - run: echo "$SSH_KEY" >> ~/.ssh/github-action
