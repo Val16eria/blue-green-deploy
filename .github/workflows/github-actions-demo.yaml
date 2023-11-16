@@ -21,6 +21,7 @@ jobs:
       - run: mkdir -p ~/.ssh
       - run: echo '$SSH_PRIVATE_KEY' | tr -d '\r' > ~/.ssh/id_rsa
       - run: chmod 700 ~/.ssh/id_rsa
+      - run: ssh-agent
       - run: eval "$(ssh-agent -s)"
       - run: set -x SSH_AUTH_SOCK /tmp/ssh-qSWfVCBEZQcc/agent.4858
       - run: set -x SSH_AGENT_PID 4859
