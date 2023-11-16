@@ -11,8 +11,6 @@ jobs:
     strategy:
       matrix:
         node-version: [ 18.x ]
-    env:
-      SSH_KEY: ${{ secrets.SSH_KEY }}
     steps:
       - uses: actions/checkout@v4
       # CREATE NODE SERVER
@@ -23,8 +21,8 @@ jobs:
       - run: mkdir -p ~/.ssh
       - run: echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
       - run: chmod 700 ~/.ssh/id_rsa
-      - run: eval "$(ssh-agent)"
-      - run: ssh-add ~/.ssh/id_rsa
+      - run: eval "$(ssh-agent -s)"
+      - run: ssh-add -K ~/.ssh/id_rsa
       - run: ssh-keyscan -t rsa 'root@wis-software.ru -p 32522' > ~/.ssh/known_hosts
       - run: echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
       - run: chmod 644 ~/.ssh/known_hosts
