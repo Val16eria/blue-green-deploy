@@ -28,7 +28,7 @@ jobs:
         run: yarn build
       # SSH
 #      - run: scp -r -P ${{ secrets.SSH_PORT_PROD }} build/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/test
-      - run: sshpass -p ${{ secrets.PASSPHRASE }} scp -r -P ${{ secrets.SSH_PORT_PROD }} build/* ${{ secrets.SSH_USER }}@${{ SSH_HOST }}:/var/www/test
+      - run: sshpass -p ${{ secrets.PASSPHRASE }} scp -r -P ${{ secrets.SSH_PORT_PROD }} build/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/test
 #      - name: install ssh key
 #        uses: shimataro/ssh-key-action@v2
 #        with:
