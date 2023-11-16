@@ -21,7 +21,7 @@ jobs:
       - run: mkdir -p ~/.ssh
       - run: echo '$SSH_PRIVATE_KEY' | tr -d '\r' > ~/.ssh/id_rsa
       - run: chmod 700 ~/.ssh/id_rsa
-      - run: eval '$(ssh-agent -s)'
+      - run: eval "$(ssh-agent -s)"
       - run: ssh-add ~/.ssh/id_rsa
       - run: ssh-keyscan -t rsa 'root@wis-software.ru -p 32522' > ~/.ssh/known_hosts
       - run: echo -e 'Host *\n\tStrictHostKeyChecking no\n\n' > ~/.ssh/config
