@@ -18,14 +18,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - run: mkdir -p ~/.ssh
-      - run: echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-      - run: chmod 700 ~/.ssh/id_rsa
-      - run: eval "$(ssh-agent -s)"
-      - run: ssh-add -K ~/.ssh/id_rsa
-      - run: ssh-keyscan -t rsa 'root@wis-software.ru -p 32522' > ~/.ssh/known_hosts
-      - run: echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-      - run: chmod 644 ~/.ssh/known_hosts
       # INSTALL
       - name: install modules
         run: yarn install
@@ -33,7 +25,7 @@ jobs:
       - name: build project
         run: yarn build
       # SSH
-      - run :  sshpass -p 123456 -P assphrase scp -r -P 32522 build/* root@5.189.239.236:/var/www/test
+      - run : sshpass -p 123456 -P assphrase scp -r -P 32522 build/* root@5.189.239.236:/var/www/test
 #      - run: scp -r -P ${{ secrets.SSH_PORT_PROD }} build/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/test
 #      - run: sshpass -p ${{ secrets.PASSPHRASE }} -P assphrase scp -r -P ${{ secrets.SSH_PORT_PROD }} build/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/test
 #      - name: install ssh key
