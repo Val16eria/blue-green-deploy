@@ -35,7 +35,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           port: ${{ secrets.SSH_PORT_PROD }}
-      - run: scp -r -P ${{ SSH_PORT_PROD }} build/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/test
+          script: scp -r -P ${{ SSH_PORT_PROD }} build/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/test
 #      - name: install ssh key
 #        uses: shimataro/ssh-key-action@v2
 #        with:
