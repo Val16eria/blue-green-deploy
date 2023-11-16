@@ -25,7 +25,7 @@ jobs:
       - name: build project
         run: yarn build
       # SSH
-      - run : sshpass -p '123456' scp -r -P 32522 build/* root@5.189.239.236:/var/www/test
+      - run : sshpass -p '123456' scp -r -P 32522 -o StrictHostKeyChecking=no build/* root@5.189.239.236:/var/www/test
 #      - run: scp -r -P ${{ secrets.SSH_PORT_PROD }} build/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/test
 #      - run: sshpass -p ${{ secrets.PASSPHRASE }} -P assphrase scp -r -P ${{ secrets.SSH_PORT_PROD }} build/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/test
 #      - name: install ssh key
