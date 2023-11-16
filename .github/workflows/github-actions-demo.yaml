@@ -18,17 +18,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - run: mkdir -p ~/.ssh
-      - run: echo '$SSH_PRIVATE_KEY' | tr -d '\r' > ~/.ssh/id_rsa
-      - run: chmod 700 ~/.ssh/id_rsa
-      - run: ssh-agent
-      - run: eval `ssh-agent -s`
-      - run: set -x SSH_AUTH_SOCK /tmp/ssh-qSWfVCBEZQcc/agent.4858
-      - run: set -x SSH_AGENT_PID 4859
-      - run: sshpass -p '123456' ssh-add ~/.ssh/id_rsa
-      - run: ssh-keyscan -t rsa 'root@wis-software.ru -p 32522' > ~/.ssh/known_hosts
-      - run: echo -e 'Host *\n\tStrictHostKeyChecking no\n\n' > ~/.ssh/config
-      - run: chmod 644 ~/.ssh/known_hosts
       # INSTALL
       - name: install modules
         run: yarn install
