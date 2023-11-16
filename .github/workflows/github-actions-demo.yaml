@@ -24,6 +24,19 @@ jobs:
       # BUILD
       - name: build project
         run: yarn build
+      # CREATE SSH
+#      - run: mkdir -p ~/.ssh/
+#      - run: echo ${{ secrets.SSH_PRIVATE_KEY }} > ~/.ssh/id_rsa
+#      - run: chmod 600 ~/.ssh/id_rsa
+#      - run: ssh-keyscan -t rsa 'root@wis-software -p 32522' >> ~/.ssh/known_hosts
+#
+#      - name: install ssh keys
+        # check this thread to understand why its needed:
+        # https://stackoverflow.com/a/70447517
+      - run: |
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          ssh-keyscan -H wis-software.ru > ~/.ssh/known_hosts
       # SSH
       - run : sshpass -p '123456' scp -r -P 32522 -o StrictHostKeyChecking=no build/* root@5.189.239.236:/var/www/test
 #      - run: scp -r -P ${{ secrets.SSH_PORT_PROD }} build/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/test
