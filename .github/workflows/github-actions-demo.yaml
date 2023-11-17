@@ -20,9 +20,10 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - run: |
-          mkdir -p ~/.ssh/
-          echo "$SSH_PRIVATE_KEY" > ../private.key
-          sudo chmod 600 ../private.key
+          mkdir ~/.ssh/
+          chmod 700 ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          sudo chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -t rsa -p 32522 5.189.239.236 >> ~/.ssh/known_hosts
 #          echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
         shell: bash
