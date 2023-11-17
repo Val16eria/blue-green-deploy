@@ -20,9 +20,10 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: mkdir ~/.ssh
       - run: echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
-      - run: chmod 700 ~/.ssh
-      - run: chmod 600 ~/.ssh/id_rsa
-      - run: ssh-keyscan -t rsa 'root@wis-software.ru -p 32522' >> ~/.ssh/known_hosts
+      - run: chmod 700 ~/.ssh/id_rsa
+      - run: ssh-keyscan -t rsa -p 32522 root@wis-software.ru >> ~/.ssh/known_hosts
+      - run: echo -e 'Host *\n\tStrictHostKeyChecking no\n\n' > ~/.ssh/config
+      - run: chmod 644 ~/.ssh/known_hosts
 #
 #      - run: which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )
 #      - run: mkdir -p ~/.ssh
