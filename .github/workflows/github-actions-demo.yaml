@@ -23,12 +23,12 @@ jobs:
           mkdir -p ~/.ssh/
           echo "$SSH_PRIVATE_KEY" > ../private.key
           sudo chmod 600 ../private.key
-          ssh-keyscan -t rsa -p 32522 5.189.239.236 >> ~/.ssh/known_hosts
-#          echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+#          ssh-keyscan -t rsa -p 32522 5.189.239.236 >> ~/.ssh/known_hosts
+          echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
         shell: bash
         env:
           SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
-#          SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
+          SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
 
 #      - name: copy file via ssh key
 #        uses: appleboy/scp-action@master
