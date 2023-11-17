@@ -34,7 +34,7 @@ jobs:
         run: yarn build
       - run: |
           eval $(ssh-agent -s)
-          sshpass -p '123456' ssh-add ~/.ssh/private.key
+          ssh-add ~/.ssh/private.key
           echo "Deploy to dev environment"
           sshpass -p '123456' scp -r -P 32522 build/* root@5.189.239.236:/var/www/test
 
