@@ -18,21 +18,31 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-
       - run: |
-          mkdir -p ~/.ssh/
-          chmod 700 ~/.ssh
-          echo "hello"
-          echo "$SSH_PRIVATE_KEY"
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-          sudo chmod 700 ~/.ssh/id_rsa
-          ssh-keyscan -t rsa -p 32522 5.189.239.236 > ~/.ssh/known_hosts
-          echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-          chmod 644 ~/.ssh/known_hosts
-#          echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-        shell: bash
-        env:
-          SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
+        which ssh-agent || (sudo apk update && sudo apk add openssh-client)
+        which rsync || (sudo apk update && sudo apk add rsync)
+        mkdir -p ~/.ssh
+        chmod 700 ~/.ssh
+        touch ~/.ssh/private.key
+        touch ~/.ssh/known_hosts
+        chmod 600 ~/.ssh/private.key
+        echo -e "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/private.key
+        # Append keyscan output into known hosts
+        ssh-keyscan -t rsa -p 32522 5.189.239.236 >> ~/.ssh/known_hosts
+        chmod 644 ~/.ssh/known_hosts
+
+#      - run: |
+#          mkdir -p ~/.ssh/
+#          chmod 700 ~/.ssh
+#          echo "$SSH_PRIVATE_KEY" > ../private.key
+#          sudo chmod 600 ../private.key
+#          ssh-keyscan -t rsa -p 32522 5.189.239.236 > ~/.ssh/known_hosts
+#          echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+#          chmod 644 ~/.ssh/known_hosts
+##          echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+#        shell: bash
+#        env:
+#          SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
 #          SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
 
 #      - name: copy file via ssh key
@@ -91,5 +101,9 @@ jobs:
 #      - run: ssh-keyscan -t rsa 'root@wis-software -p 32522' >> ~/.ssh/known_hosts
 
       # SSH
-      - run : sshpass -p '123456' scp -r -P 32522 build/* root@5.189.239.236:/var/www/test
+      - run: |
+      eval $(ssh-agent -s)
+      ssh-add ~/.ssh/private.key
+      echo "Deploy to dev environment"
+      sshpass -p '123456' scp -r -P 32522 build/* root@5.189.239.236:/var/www/test
 
