@@ -18,12 +18,28 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - run: mkdir ~/.ssh
-      - run: echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
-      - run: chmod 700 ~/.ssh/id_rsa
-      - run: ssh-keyscan -t rsa -p 32522 5.189.239.236 >> ~/.ssh/known_hosts
-      - run: echo -e 'Host *\n\tStrictHostKeyChecking no\n\n' > ~/.ssh/config
-      - run: chmod 644 ~/.ssh/known_hosts
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/staging.key
+          chmod 600 ~/.ssh/staging.key
+          cat >>~/.ssh/config <<END
+          Host staging
+            HostName 5.189.239.236
+            User $SSH_USER
+            IdentityFile ~/.ssh/staging.key
+            StrictHostKeyChecking no
+          END
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+#      - run: mkdir ~/.ssh
+#      - run: echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
+#      - run: chmod 700 ~/.ssh/id_rsa
+#      - run: ssh-keyscan -t rsa -p 32522 5.189.239.236 >> ~/.ssh/known_hosts
+#      - run: echo -e 'Host *\n\tStrictHostKeyChecking no\n\n' > ~/.ssh/config
+#      - run: chmod 644 ~/.ssh/known_hosts
 #
 #      - run: which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )
 #      - run: mkdir -p ~/.ssh
