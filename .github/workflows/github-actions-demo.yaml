@@ -20,13 +20,15 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - run: |
-          mkdir ~/.ssh/
+          mkdir -p ~/.ssh/
           chmod 700 ~/.ssh
           echo "hello"
           echo "$SSH_PRIVATE_KEY"
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-          sudo chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -t rsa -p 32522 5.189.239.236 >> ~/.ssh/known_hosts
+          sudo chmod 700 ~/.ssh/id_rsa
+          ssh-keyscan -t rsa -p 32522 5.189.239.236 > ~/.ssh/known_hosts
+          echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+          chmod 644 ~/.ssh/known_hosts
 #          echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
         shell: bash
         env:
