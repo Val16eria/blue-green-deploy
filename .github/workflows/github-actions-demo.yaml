@@ -19,17 +19,17 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: |
-        which ssh-agent || (sudo apk update && sudo apk add openssh-client)
-        which rsync || (sudo apk update && sudo apk add rsync)
-        mkdir -p ~/.ssh
-        chmod 700 ~/.ssh
-        touch ~/.ssh/private.key
-        touch ~/.ssh/known_hosts
-        chmod 600 ~/.ssh/private.key
-        echo -e "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/private.key
+          which rsync || (sudo apk update && sudo apk add rsync)
+          which ssh-agent || (sudo apk update && sudo apk add openssh-client)
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          touch ~/.ssh/private.key
+          touch ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/private.key
+          echo -e "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/private.key
         # Append keyscan output into known hosts
-        ssh-keyscan -t rsa -p 32522 5.189.239.236 >> ~/.ssh/known_hosts
-        chmod 644 ~/.ssh/known_hosts
+          ssh-keyscan -t rsa -p 32522 5.189.239.236 >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
 
 #      - run: |
 #          mkdir -p ~/.ssh/
@@ -102,8 +102,8 @@ jobs:
 
       # SSH
       - run: |
-      eval $(ssh-agent -s)
-      ssh-add ~/.ssh/private.key
-      echo "Deploy to dev environment"
-      sshpass -p '123456' scp -r -P 32522 build/* root@5.189.239.236:/var/www/test
+          eval $(ssh-agent -s)
+          ssh-add ~/.ssh/private.key
+          echo "Deploy to dev environment"
+          sshpass -p '123456' scp -r -P 32522 build/* root@5.189.239.236:/var/www/test
 
