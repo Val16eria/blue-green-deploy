@@ -18,14 +18,20 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - run: which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )
-      - run: mkdir -p ~/.ssh
+      - run: mkdir ~/.ssh
       - run: echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-      - run: chmod 700 ~/.ssh/id_rsa
-      - run: eval `ssh-agent -s`; ssh-add ~/.ssh/id_rsa
-      - run: ssh-keyscan -t rsa 'root@wis-software.ru -p 32522' > ~/.ssh/known_hosts
-      - run: echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-      - run: chmod 644 ~/.ssh/known_hosts
+      - run: chmod 700 ~/.ssh
+      - run: chmod 600 ~/.ssh/id_rsa
+      - run: ssh-keyscan -t rsa root@wis-software.ru -p 32522 >> ~/.ssh/known_hosts
+#
+#      - run: which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )
+#      - run: mkdir -p ~/.ssh
+#      - run: echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+#      - run: chmod 700 ~/.ssh/id_rsa
+#      - run: eval `ssh-agent -s`; ssh-add ~/.ssh/id_rsa
+#      - run: ssh-keyscan -t rsa 'root@wis-software.ru -p 32522' > ~/.ssh/known_hosts
+#      - run: echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+#      - run: chmod 644 ~/.ssh/known_hosts
       # INSTALL
       - name: install modules
         run: yarn install
@@ -37,40 +43,7 @@ jobs:
 #      - run: echo ${{ secrets.SSH_PRIVATE_KEY }} > ~/.ssh/id_rsa
 #      - run: chmod 600 ~/.ssh/id_rsa
 #      - run: ssh-keyscan -t rsa 'root@wis-software -p 32522' >> ~/.ssh/known_hosts
-#
-#      - name: install ssh keys
-        # check this thread to understand why its needed:
-        # https://stackoverflow.com/a/70447517
+
       # SSH
       - run : sshpass -p '123456' scp -r -P 32522 -o StrictHostKeyChecking=no build/* root@5.189.239.236:/var/www/test
-#      - run: scp -r -P ${{ secrets.SSH_PORT_PROD }} build/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/test
-#      - run: sshpass -p ${{ secrets.PASSPHRASE }} -P assphrase scp -r -P ${{ secrets.SSH_PORT_PROD }} build/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/test
-#      - name: install ssh key
-#        uses: shimataro/ssh-key-action@v2
-#        with:
-#          key: ${{ secrets.SSH_PRIVATE_KEY }}
-#          name: is_rsa
-#          known_hosts: ${{ secrets.KNOWN_HOSTS }}
-#      - name: adding Known Hosts
-#        run: ssh-keyscan -p ${{ secrets.SSH_PORT_PROD }} -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-#      - name: deploy with rsync
-#        run: rsync -avz -e "ssh -p ${{ secrets.SSH_PORT_PROD }}" build/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/test
 
-#      - run: mkdir -p ~/.ssh
-#      - run: echo "$SSH_KEY" >> ~/.ssh/github-action
-#      - run: chmod 700 ~/.ssh/github-action
-#      - run: echo -e "Host static\n\tUser github-actions-tutorial\n\tHostname 5.189.239.236\n\tIdentityFile ~/.ssh/github-action\n\tStrictHostKeyChecking No" >> ~/.ssh/config
-
-#  prod:
-#    if: ${{ github.ref == 'ref/heads/master' }}
-#    steps:
-#      - name: it is master branch
-#      - run: scp -r -P 32522 build/* root@wis-software.ru:/var/www/test
-#      - run: echo "finish"
-#
-#  stage:
-#    if: ${{ github.ref == 'ref/heads/stage' }}
-#    steps:
-#      - name: it is stage branch
-#      - run: scp -r -P 42522 build/* root@wis-software.ru:/var/www/test2
-#      - run: echo "finish"
