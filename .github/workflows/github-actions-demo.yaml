@@ -18,6 +18,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+      # Setup key
+      - run: set -eu
+      - run: mkdir "$HOME/.ssh"
+      - run: echo "$" > "$HOME/.ssh/key"
+      - run: chmod 600 "$HOME/.ssh/key"
       # INSTALL
       - name: install modules
         run: yarn install
@@ -33,10 +38,6 @@ jobs:
 #      - name: install ssh keys
         # check this thread to understand why its needed:
         # https://stackoverflow.com/a/70447517
-      - run: |
-          install -m 600 -D /dev/null ~/.ssh/id_rsa
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          ssh-keyscan -H wis-software.ru > ~/.ssh/known_hosts
       # SSH
       - run : sshpass -p '123456' scp -r -P 32522 -o StrictHostKeyChecking=no build/* root@5.189.239.236:/var/www/test
 #      - run: scp -r -P ${{ secrets.SSH_PORT_PROD }} build/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/test
