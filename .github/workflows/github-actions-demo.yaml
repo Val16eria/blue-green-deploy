@@ -38,5 +38,5 @@ jobs:
           echo "2"
           ssh-add -l ~/.ssh/private.key
           echo "Deploy to dev environment"
-          sshpass -p '123456' scp -r -P 32522 build/* root@5.189.239.236:/var/www/test
+          scp -r -P 32522 build/* root@5.189.239.236:/var/www/test
 
