@@ -2,11 +2,15 @@ name: GitHub Actions Demo
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on:
   push:
-    branches: [ master, stage ]
+    branches:
+      - master
+      - stage
   pull_request:
-    branches: [ master, stage ]
+    branches:
+      - master
+      - stage
 jobs:
-  init:
+  deploing:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -24,12 +28,24 @@ jobs:
           chmod 700 ~/.ssh/id_rsa
           eval $(ssh-agent -s)
           ssh-add ~/.ssh/id_rsa
-          ssh-keyscan -t rsa -p 32522 5.189.239.236 >> ~/.ssh/known_hosts
+      - name: master
+        if: ${{ github.ref == 'refs/heads/master' }}
+        run:
+          ssh-keyscan -t rsa -p ${{ secrets.SSH_PORT_PROD }} ${{ secrets.SSH_IP_ADDRESS }} >> ~/.ssh/known_hosts
+      - name: stage
+        if: ${{ github.ref == 'refs/heads/stage' }}
+        run:
+          ssh-keyscan -t rsa -p ${{ secrets.SSH_PORT_STAGE }} ${{ secrets.SSH_IP_ADDRESS }} >> ~/.ssh/known_hosts
+      - run: |
           echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
           chmod 644 ~/.ssh/known_hosts
       - name: install modules
         run: yarn install
       - name: build project
         run: yarn build
-      - name: deploying...
-        run: scp -r -P 32522 build/* root@5.189.239.236:/var/www/test
+      - name: deploy to master
+        if: ${{ github.ref == 'refs/heads/master' }}
+        run: scp -r -P ${{ secrets.SSH_PORT_PROD }} build/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_SERVER_NAME }}:/var/www/test
+      - name: deploy to stage
+        if: ${{ github.ref == 'refs/heads/stage' }}
+        run: scp -r -P ${{ secrets.SSH_PORT_STAGE }} build/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_SERVER_NAME }}:/var/www/test
